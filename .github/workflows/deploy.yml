@@ -4,7 +4,7 @@ on:
   # Trigger the workflow every time you push to the `main` branch
   # Using a different branch name? Replace `main` with your branch’s name
   push:
-    branches: [main]
+    branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
@@ -14,33 +14,18 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18 # or a later version.  Astro recommends >= 18.14.1
-
-      - name: Install dependencies
-        run: npm install # or pnpm install or yarn install, based on your project
-
-      - name: Build your site
-        run: npm run build # or pnpm run build or yarn run build, based on your project
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2 # Upgraded version.  v1 is deprecated.
-        with:
-          path: ./dist #  Make sure this matches your Astro build output directory!  This is crucial.  Astro usually defaults to "dist".
+        uses: actions/checkout@v4
+      - name: Install, build, and upload your site
+        uses: withastro/action@v3
+        # with:
+          # path: . # The root location of your Astro project inside the repository. (optional)
+          # node-version: 20 # The specific version of Node that should be used to build your site. Defaults to 20. (optional)
+          # package-manager: pnpm@latest # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
 
   deploy:
     needs: build
@@ -51,4 +36,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2 # Upgraded version. v1 is deprecated.
+        uses: actions/deploy-pages@v4
